@@ -33,4 +33,11 @@ def create_app(test_config=None):
     def hello():
         return 'Testing the application factory.'
     
+    #to initialize the database with bookshelf
+    from . import db
+    db.init_app(bookshelf)
+
+    from . import auth
+    bookshelf.register_blueprint(auth.bp)
+    
     return bookshelf
