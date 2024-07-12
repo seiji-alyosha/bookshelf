@@ -4,7 +4,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from bookshelf.db import get_db
-#to create a blueprint for authentication and book related views
+#to create a blueprint for authentication views
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def login_required(view):
@@ -68,11 +68,11 @@ def create():
                 error = f'Sorry, {username} is already taken. Please try another.'
             #once the user successfully creates an account, they are redirected to the login screen.
             else:
-                return redirect(url_for())
+                return redirect(url_for('auth.login'))
         #this allows the user to see the error messages if they occur.
         flash(error)
 
-    return render_template("auth/create.html")
+    return render_template('auth/create.html')
 
 @bp.route('/login', methods=('GET','POST'))
 def login():
@@ -102,7 +102,10 @@ def login():
             #this allows the users data to be available throughout all views.
             session['user_id'] = user['id']
             #to direct successfully logged in users to the index page.
-            return redirect(url_for())   
+            return redirect(url_for('index'))
+        #this allows the user to see the error messages if they occur.
+        flash(error)
+    return render_template('auth/login.html')   
         
 @bp.route('/logout')
 def logout():
