@@ -37,7 +37,12 @@ def create_app(test_config=None):
     from . import db
     db.init_app(bookshelf)
 
+    #registers blueprints with bookshelf
     from . import auth
+    from . import books
     bookshelf.register_blueprint(auth.bp)
+    bookshelf.register_blueprint(books.bp)
+    app.add_url_rule('/', endpoint='index')
+
     
     return bookshelf

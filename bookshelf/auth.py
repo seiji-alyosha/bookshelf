@@ -36,7 +36,7 @@ def load_user():
 @bp.route('/create', methods=('GET','POST'))
 def create():
     #to create a username and password, the user will have to submit a form. in this case, the method will be POST. 
-    if request.method == 'POSt':
+    if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         #setting up the database whenever user adds information
@@ -71,7 +71,6 @@ def create():
                 return redirect(url_for('auth.login'))
         #this allows the user to see the error messages if they occur.
         flash(error)
-
     return render_template('auth/create.html')
 
 @bp.route('/login', methods=('GET','POST'))
@@ -82,6 +81,13 @@ def login():
         password = request.form['password']
         db = get_db()
         error = None
+
+        #to handle users forgetting to add usernames or passwords.
+        if not username:
+            error = 'Whoops! Looks like you forgot to add a username. Please try again.'
+        elif not password:
+            error = 'Whoops! Looks like you forgot to add a password. Please try again.'
+
         #used to validate the users input. 
         #gets data based on the users input.
         user = db.execute(
@@ -102,7 +108,7 @@ def login():
             #this allows the users data to be available throughout all views.
             session['user_id'] = user['id']
             #to direct successfully logged in users to the index page.
-            return redirect(url_for('index'))
+            return redirect(url_for())
         #this allows the user to see the error messages if they occur.
         flash(error)
     return render_template('auth/login.html')   
