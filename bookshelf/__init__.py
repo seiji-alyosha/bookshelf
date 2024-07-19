@@ -42,7 +42,7 @@ def create_app(test_config=None):
     from . import books
     bookshelf.register_blueprint(auth.bp)
     bookshelf.register_blueprint(books.bp)
-    app.add_url_rule('/', endpoint='index')
+    bookshelf.add_url_rule('/', endpoint='index')
 
     
     return bookshelf
