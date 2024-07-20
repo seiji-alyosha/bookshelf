@@ -13,7 +13,8 @@ def books():
     #? 
     library = db.execute(
         'SELECT book.id, book.author, book.title, book.info, book.added'
-        ' ORDER BY created DESC'
+        ' FROM book'
+        ' ORDER BY added DESC'
     ).fetchall()
-    return render_template('index.html',library=library)
+    return render_template('library/index.html', list=library)
 

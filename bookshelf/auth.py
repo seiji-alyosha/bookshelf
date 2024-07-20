@@ -118,5 +118,5 @@ def login():
 def logout():
     #to clears the users session and send them to the login window.
     session.clear()
-    return redirect(url_for())
+    return redirect(url_for('auth.login'))
 
