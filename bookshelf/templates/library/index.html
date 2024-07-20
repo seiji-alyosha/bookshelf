@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title%} bookshelf {% endblock %}
+{%block nav%}
+    <menu>
+        {% if g.user %}
+            <li>{{g.user['username']}}</li>
+            <li><a href='{{ url_for(auth.logout) }}'>log out</a></li>
+        {% endif %}
+    </menu>
+{% endblock %}
+
+<h1>books</h1>
+{% block content%}
+    {% for book in library %}
+        <article>
+            <b> {{ book['title'] }} </b>
+            <p> {{ book['added'] }} </p>
+        </article>
+    {% end for %}
+{% endblock %}
+
+

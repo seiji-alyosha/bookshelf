@@ -32,7 +32,7 @@ def create_app(test_config=None):
     @bookshelf.route('/')
     def hello():
         return 'Testing the application factory.'
-    
+
     #to initialize the database with bookshelf
     from . import db
     db.init_app(bookshelf)

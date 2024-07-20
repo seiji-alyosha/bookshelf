@@ -83,6 +83,7 @@ def login():
         error = None
 
         #to handle users forgetting to add usernames or passwords.
+        #try making this a try block
         if not username:
             error = 'Whoops! Looks like you forgot to add a username. Please try again.'
         elif not password:
@@ -93,7 +94,7 @@ def login():
         user = db.execute(
             'SELECT * FROM user WHERE username = ?',
             (username,)
-        ).fetchone
+        ).fetchone()
 
         #can this be a try block? why and why not?
         if user is None:
@@ -108,7 +109,7 @@ def login():
             #this allows the users data to be available throughout all views.
             session['user_id'] = user['id']
             #to direct successfully logged in users to the index page.
-            return redirect(url_for())
+            return redirect(url_for('index'))
         #this allows the user to see the error messages if they occur.
         flash(error)
     return render_template('auth/login.html')   
