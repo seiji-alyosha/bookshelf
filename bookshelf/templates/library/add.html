@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title%} bookshelf {% endblock %}
+{%block nav%}
+    <menu>
+        {% if g.user %}
+            <li>{{g.user['username']}}</li>
+            <li><a href='{{ url_for('auth.logout') }}'>log out</a></li>
+            <li><a href='{{ url_for('index') }}'>bookshelf</a></li>
+        {% endif %}
+    </menu>
+{% endblock %}
+
+<h1>books</h1>
+{% block content%}
+    <form method='post'>
+        <label for='ISBN'>Your book's ISBN number</label>
+        <input type='text' name='isbn' id='isbn'>
+        <input type='submit' value='Submit'>
+    </form>
+{% endblock %}

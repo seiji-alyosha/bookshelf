@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, render_template, g
+    Blueprint, render_template, g, request
 )
 from bookshelf.db import get_db
 from bookshelf.auth import login_required
@@ -7,6 +7,7 @@ from bookshelf.auth import login_required
 bp = Blueprint('books',__name__)
 
 @bp.route('/')
+@login_required
 def books():
     #to get the data from the py file that accesses the SQL database
     db = get_db()
@@ -18,3 +19,10 @@ def books():
     ).fetchall()
     return render_template('library/index.html', list=library)
 
+@bp.route('/add', methods=['GET', 'POST'])
+@login_required
+def add():
+    if request.method == 'POST':
+        isbn = request.form['ISBN']
+        
+    return render_template('library/add.html')
