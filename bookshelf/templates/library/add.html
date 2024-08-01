@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title%} bookshelf {% endblock %}
-{%block nav%}
+{% block title %} bookshelf {% endblock %}
+{% block nav %}
     <menu>
         {% if g.user %}
             <li>{{g.user['username']}}</li>
@@ -12,10 +12,13 @@
 {% endblock %}
 
 <h1>books</h1>
-{% block content%}
+{% block content %}
     <form method='post'>
         <label for='ISBN'>Your book's ISBN number</label>
         <input type='text' name='ISBN' id='ISBN'>
         <input type='submit' value='Submit'>
     </form>
+    {% if ISBN %}
+        <p>{{ISBN}}</p>
+    {% endif %}
 {% endblock %}
