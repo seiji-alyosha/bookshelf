@@ -1,6 +1,8 @@
 from flask import (
     Blueprint, render_template, g, request
 )
+
+import requests
 from bookshelf.db import get_db
 from bookshelf.auth import login_required
 
@@ -23,6 +25,15 @@ def books():
 @login_required
 def add():
     if request.method == 'POST':
-        isbn = request.form['ISBN']
+        isbn = request.form.get('ISBN')
+        if isbn:
+            response = requests.get(f'https://openlibrary.org/api/books?bibkeys=ISBN:{isbn}&format=json&jscmd=data')
+    return render_template('library/add.html')
+
+
+            
+
+            
+
         
     return render_template('library/add.html')
