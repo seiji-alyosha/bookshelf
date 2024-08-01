@@ -1,2 +1,3 @@
 #ignores the virtual environment files
 .venv/
+.vscode/
