@@ -19,6 +19,6 @@
         <input type='submit' value='Submit'>
     </form>
     {% if ISBN %}
-        <p>{{ISBN}}</p>
+        <pre>{{ ISBN | tojson(indent=2) }}</pre>
     {% endif %}
 {% endblock %}

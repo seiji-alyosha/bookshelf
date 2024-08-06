@@ -24,12 +24,16 @@ def books():
 @bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
-    response = None
+    book_response = None
     if request.method == 'POST':
         isbn = request.form.get('ISBN')
         if isbn:
+            #check the url to see if it loads the correct information. next step is to print out actual book information.
+            #check chat gpt
             response = requests.get(f'https://openlibrary.org/api/books?bibkeys=ISBN:{isbn}&format=json&jscmd=data')
-    return render_template('library/add.html', ISBN=response)
+            if response.status_code == 200:
+                book_response = response.json()
+    return render_template('library/add.html', ISBN=book_response)
 
 
             
