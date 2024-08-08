@@ -5,6 +5,7 @@ from flask import (
 import requests
 from bookshelf.db import get_db
 from bookshelf.auth import login_required
+from bookshelf.info import get_book_info, get_book_description
 
 bp = Blueprint('books',__name__)
 
@@ -24,21 +25,20 @@ def books():
 @bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
-    book_response = None
+    tad = None
+    book_info = None
     if request.method == 'POST':
         isbn = request.form.get('ISBN')
         if isbn:
             #check the url to see if it loads the correct information. next step is to print out actual book information.
             #check chat gpt
-            response = requests.get(f'https://openlibrary.org/api/books?bibkeys=ISBN:{isbn}&format=json&jscmd=data')
-            if response.status_code == 200:
-                book_response = response.json()
-    return render_template('library/add.html', ISBN=book_response)
+            book_info = get_book_info(isbn)
+            works_key = book_info.get('works','this book does not have a works_key :()')
 
-
-            
-
-            
-
-        
-    return render_template('library/add.html')
+            tad = dict (
+                title = book_info.get('title'),
+                author = book_info.get('author'),
+                description = get_book_description(works_key)
+            )
+      
+    return render_template('library/add.html', book=tad)
