@@ -14,11 +14,24 @@
 <h1>books</h1>
 {% block content %}
     <form method='post'>
-        <label for='ISBN'>Your book's ISBN number</label>
-        <input type='text' name='ISBN' id='ISBN'>
+        <label for='title'>Book title:</label>
+        <input type='text' name='title' id='title'>
+
+        <label for='author'>Author:</label>
+        <input type='text' name='author' id='author'>
+
+        <label for='notes'>Notes:</label>
+        <input type='text' name='notes' id='author'>
         <input type='submit' value='Submit'>
     </form>
-    {% if book %}
-        <pre>{{ book | tojson(indent=2) }}</pre>
+    {% if title %}
+        <p>{{title}}</p>
+    {% endif %}
+    {% if author %}
+        <p>{{author}}</p>
+    {% endif %}
+    
+    {% if notes %}
+        <p>{{notes}}</p>
     {% endif %}
 {% endblock %}

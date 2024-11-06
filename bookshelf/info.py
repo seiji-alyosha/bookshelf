@@ -1,9 +1,9 @@
 import requests
 
 #to get general information from the book via isbn number, including the works key. This is needed to get a description.
-def get_book_info(isbn):
+def get_book_info(number):
     try:
-        response = requests.get(f'https://openlibrary.org/isbn/{isbn}.json')
+        response = requests.get(f'https://openlibrary.org/isbn/{number}.json')
         response.raise_for_status()
         book_response = response.json()
         return book_response
