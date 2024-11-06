@@ -1,3 +1,1 @@
-bookshelf,
-
-your library
+a personal library
