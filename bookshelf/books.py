@@ -35,12 +35,38 @@ def add():
        error = None
        
        db.execute( 
-            "INSERT INTO book (title, author, notes) VALUES (?, ?, ?)",
+            'INSERT INTO book (title, author, notes) VALUES (?, ?, ?)',
             (title, author, notes),
         )
        db.commit()
 
     return render_template('library/add.html')
+
+@bp.route('/<string:title>', methods=['GET', 'POST'])
+def view_book(title):
+
+    db = get_db()
+    error = None
+
+    content = db.execute (
+        'SELECT * FROM book WHERE title = ?', 
+        (title,)
+    ).fetchone()
+
+    return render_template('library/book.html', book_info=content)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     '''
     SAVING FOR LATER
