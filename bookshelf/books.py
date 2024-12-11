@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, render_template, g, request
+    Blueprint, render_template, g, request, redirect, url_for, flash
 )
 
 import requests
@@ -43,6 +43,7 @@ def add():
     return render_template('library/add.html')
 
 @bp.route('/<string:title>', methods=['GET', 'POST'])
+@login_required
 def view_book(title):
 
     db = get_db()
@@ -54,6 +55,41 @@ def view_book(title):
     ).fetchone()
 
     return render_template('library/book.html', book_info=content)
+
+
+@bp.route('/<string:title>/edit', methods=['GET','POST'])
+@login_required
+def edit_book(title):
+
+    db = get_db()
+    error = None
+
+    if request.method == 'POST':
+       new_title = request.form.get('title')
+       author = request.form.get('author')
+       notes = request.form.get('notes')
+       
+       db.execute('UPDATE book SET title = ?, author = ?, notes = ? WHERE title = ?',
+                    (new_title, author, notes, title))
+       db.commit()
+       db.close()
+
+       return redirect(url_for('books.view_book', title=new_title))
+    
+    content = db.execute (
+        'SELECT * FROM book WHERE title = ?', 
+        (title,)
+    ).fetchone()
+
+    return render_template('library/edit.html', book_info=content)
+
+@bp.route('/<string:title>', methods=['GET', 'POST'])
+@login_required
+def delete_book(title):
+    flash(f'Are you sure you want to delete { title }?', 'warning')
+
+    
+
 
 
 

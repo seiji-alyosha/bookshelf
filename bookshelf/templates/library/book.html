@@ -16,6 +16,9 @@
     <h1>{{ book_info['title'] }}</h1>
         <p><b>{{ book_info['author'] }}</b></p>
         <p>{{ book_info['notes'] }}</p>
+
+        <a href='{{ url_for('books.edit_book', title=book_info['title']) }}' class="button">Edit</a>
+        <a href='{{ url_for('books.delete_book', title=book_info['title']) }}' class="button">Delete</a>
 {% endblock %}
 
 
