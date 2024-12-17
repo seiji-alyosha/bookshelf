@@ -49,6 +49,15 @@ def view_book(title):
     db = get_db()
     error = None
 
+    if request.method == 'POST':
+        db.execute('DELETE FROM book WHERE title = ?',
+            (title,)
+        )
+        db.commit()
+        db.close()
+
+        return redirect(url_for('books.books'))
+    
     content = db.execute (
         'SELECT * FROM book WHERE title = ?', 
         (title,)
@@ -82,13 +91,6 @@ def edit_book(title):
     ).fetchone()
 
     return render_template('library/edit.html', book_info=content)
-
-@bp.route('/<string:title>', methods=['GET', 'POST'])
-@login_required
-def delete_book(title):
-    flash(f'Are you sure you want to delete { title }?', 'warning')
-
-    
 
 
 
