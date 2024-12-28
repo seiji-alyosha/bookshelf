@@ -10,6 +10,7 @@ from bookshelf.author_name import get_author_name
 
 bp = Blueprint('books',__name__)
 
+#blueprint route functions
 @bp.route('/')
 @login_required
 def books():
@@ -26,21 +27,36 @@ def books():
 @bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
-    if request.method == 'POST':
-       title = request.form.get('title')
-       author = request.form.get('author')
-       notes = request.form.get('notes')
+   if request.method == 'POST':
+      title = request.form.get('title')
+      author = request.form.get('author')
+      notes = request.form.get('notes')
 
-       db = get_db()
-       error = None
+      db = get_db()
+      error = None
+
+      if not title or not author: 
+         error = 'Please enter a title and author.'
+         flash(error)
+           
+         return render_template('library/add')
        
-       db.execute( 
-            'INSERT INTO book (title, author, notes) VALUES (?, ?, ?)',
-            (title, author, notes),
-        )
-       db.commit()
-
-    return render_template('library/add.html')
+      try: 
+         if duplicate_check(title, author) == False:
+               db.execute( 
+                  'INSERT INTO book (title, author, notes) VALUES (?, ?, ?)',
+                  (title, author, notes),
+               )
+               db.commit()
+               return redirect(url_for('books.books'))
+         else:
+               error = f'You already have <b>{title}</b> by <b>{author}</b> in your library.'
+               flash(error)
+      
+      finally:
+        db.close()
+       
+   return render_template('library/add.html')
 
 @bp.route('/<string:title>', methods=['GET', 'POST'])
 @login_required
@@ -49,6 +65,7 @@ def view_book(title):
     db = get_db()
     error = None
 
+    #whenever uses click OK to delete a book, this function runs.
     if request.method == 'POST':
         db.execute('DELETE FROM book WHERE title = ?',
             (title,)
@@ -58,10 +75,20 @@ def view_book(title):
 
         return redirect(url_for('books.books'))
     
+    #if a user is viewing a book or clicks CANCEL when deleting a book, this function runs.
+    #this is also an example of "early returns", which gives a default view for the function and also works as an else statement.
     content = db.execute (
         'SELECT * FROM book WHERE title = ?', 
         (title,)
     ).fetchone()
+
+    if not content:
+        flash('This book is not in your library. Try another selection.')
+        
+        return redirect(url_for('books.books'))
+
+
+    #user handling should go here for times when a book in the url does not match what is in the db.
 
     return render_template('library/book.html', book_info=content)
 
@@ -92,7 +119,19 @@ def edit_book(title):
 
     return render_template('library/edit.html', book_info=content)
 
-
+#non-blueprint functions
+def duplicate_check(title, author):
+    
+    db = get_db()
+    
+    duplicate = db.execute (
+        '''SELECT * FROM book 
+        WHERE LOWER(title) = LOWER(?)
+        AND LOWER(author) = LOWER(?)''',
+        (title, author)
+    ).fetchone()
+    #returns true if there is a duplicate book. Used in add_book to check for duplicates.
+    return duplicate is not None
 
 
 
