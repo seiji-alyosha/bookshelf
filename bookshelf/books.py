@@ -2,7 +2,7 @@ from flask import (
     Blueprint, render_template, g, request, redirect, url_for, flash
 )
 
-import requests
+from slugify import slugify
 from bookshelf.db import get_db
 from bookshelf.auth import login_required
 from bookshelf.info import get_book_info, get_book_description
@@ -20,7 +20,7 @@ def books():
    library = db.execute(
      'SELECT book.id, book.author, book.title, book.notes, date(book.added) as added'
      ' FROM book'
-     ' ORDER BY added DESC'
+     ' ORDER BY book.id DESC'
    ).fetchall()
    return render_template('library/index.html', list=library)
 
@@ -58,9 +58,9 @@ def add():
        
    return render_template('library/add.html')
 
-@bp.route('/<int:id>', methods=['GET', 'POST'])
+@bp.route('/<int:id>/<slug>', methods=['GET', 'POST'])
 @login_required
-def view_book(id):
+def view_book(id, slug):
 
    db = get_db()
    error = None
@@ -74,7 +74,8 @@ def view_book(id):
       db.close()
 
       return redirect(url_for('books.books'))
-    
+
+
    #if a user is viewing a book or clicks CANCEL when deleting a book, this function runs.
    #this is also an example of "early returns", which gives a default view for the function and also works as an else statement.
    content = db.execute (
@@ -82,20 +83,24 @@ def view_book(id):
       (id,)
    ).fetchone()
 
+
+   #if id in URL is wrong. This might not be necessary since the user will primarily select books from index.
    if not content:
      flash('This book is not in your library. Try another selection.')
-        
      return redirect(url_for('books.books'))
 
 
-   #user handling should go here for times when a book in the url does not match what is in the db.
+   #if slug in URL is incorrect, it recorrects the slug based on the book id.
+   if slug != slugify(content['title']):
+      return redirect(url_for('books.view_book', id=id, slug=slugify(content['title'])))   
+
 
    return render_template('library/book.html', book_info=content)
 
 
-@bp.route('/<int:id>/edit', methods=['GET','POST'])
+@bp.route('/<int:id>/<slug>/edit', methods=['GET','POST'])
 @login_required
-def edit_book(id):
+def edit_book(id, slug):
 
    db = get_db()
    error = None
@@ -110,14 +115,18 @@ def edit_book(id):
       db.commit()
       db.close()
 
-      return redirect(url_for('books.view_book', id=id))
+      return redirect(url_for('books.view_book', id=id, slug=title))
     
    content = db.execute (
       'SELECT * FROM book WHERE id = ?', 
       (id,)
    ).fetchone()
 
-   return render_template('library/edit.html', book_info=content)
+   #if the slug in the url doesn't match with the book title for the book id, it corrects the slug.
+   if slug != slugify(content['title']):
+      return redirect(url_for('books.edit_book', id=id, slug=slugify(content['title'])))
+                         
+   return render_template('library/edit.html', book_info=content, slug=slugify(content['title']))
 
 #non-blueprint functions
 def duplicate_check(title, author):

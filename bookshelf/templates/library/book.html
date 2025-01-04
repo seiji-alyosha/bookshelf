@@ -17,10 +17,10 @@
         <p><b>{{ book_info['author'] }}</b></p>
         <p>{{ book_info['notes'] }}</p>
 
-        <form action='{{ url_for('books.edit_book', id=book_info['id']) }}' method='GET'>
+        <form action='{{ url_for('books.edit_book', id=book_info['id'], slug=book_info['title']) }}' method='GET'>
             <button type='submit'>Edit</button>
         </form>
-        <form action='{{ url_for('books.view_book', id=book_info['id']) }}' method='POST'>
+        <form action='{{ url_for('books.view_book', id=book_info['id'], slug=book_info['title']) }}' method='POST'>
             <button type='submit' onclick='return confirm("Are you sure you want to delete {{book_info['title'] }}?")'>Delete</button>
         </form>
         
