@@ -14,15 +14,15 @@ bp = Blueprint('books',__name__)
 @bp.route('/')
 @login_required
 def books():
-    #to get the data from the py file that accesses the SQL database
-    db = get_db()
-    #? 
-    library = db.execute(
-        'SELECT book.id, book.author, book.title, book.notes, date(book.added) as added'
-        ' FROM book'
-        ' ORDER BY added DESC'
-    ).fetchall()
-    return render_template('library/index.html', list=library)
+   #to get the data from the py file that accesses the SQL database
+   db = get_db()
+   #? 
+   library = db.execute(
+     'SELECT book.id, book.author, book.title, book.notes, date(book.added) as added'
+     ' FROM book'
+     ' ORDER BY added DESC'
+   ).fetchall()
+   return render_template('library/index.html', list=library)
 
 @bp.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -58,80 +58,80 @@ def add():
        
    return render_template('library/add.html')
 
-@bp.route('/<string:title>', methods=['GET', 'POST'])
+@bp.route('/<int:id>', methods=['GET', 'POST'])
 @login_required
-def view_book(title):
+def view_book(id):
 
-    db = get_db()
-    error = None
+   db = get_db()
+   error = None
 
-    #whenever uses click OK to delete a book, this function runs.
-    if request.method == 'POST':
-        db.execute('DELETE FROM book WHERE title = ?',
-            (title,)
-        )
-        db.commit()
-        db.close()
+   #whenever uses click OK to delete a book, this function runs.
+   if request.method == 'POST':
+      db.execute('DELETE FROM book WHERE id = ?',
+         (id,)
+      )
+      db.commit()
+      db.close()
 
-        return redirect(url_for('books.books'))
+      return redirect(url_for('books.books'))
     
-    #if a user is viewing a book or clicks CANCEL when deleting a book, this function runs.
-    #this is also an example of "early returns", which gives a default view for the function and also works as an else statement.
-    content = db.execute (
-        'SELECT * FROM book WHERE title = ?', 
-        (title,)
-    ).fetchone()
+   #if a user is viewing a book or clicks CANCEL when deleting a book, this function runs.
+   #this is also an example of "early returns", which gives a default view for the function and also works as an else statement.
+   content = db.execute (
+      'SELECT * FROM book WHERE id = ?', 
+      (id,)
+   ).fetchone()
 
-    if not content:
-        flash('This book is not in your library. Try another selection.')
+   if not content:
+     flash('This book is not in your library. Try another selection.')
         
-        return redirect(url_for('books.books'))
+     return redirect(url_for('books.books'))
 
 
-    #user handling should go here for times when a book in the url does not match what is in the db.
+   #user handling should go here for times when a book in the url does not match what is in the db.
 
-    return render_template('library/book.html', book_info=content)
+   return render_template('library/book.html', book_info=content)
 
 
-@bp.route('/<string:title>/edit', methods=['GET','POST'])
+@bp.route('/<int:id>/edit', methods=['GET','POST'])
 @login_required
-def edit_book(title):
+def edit_book(id):
 
-    db = get_db()
-    error = None
+   db = get_db()
+   error = None
 
-    if request.method == 'POST':
-       new_title = request.form.get('title')
-       author = request.form.get('author')
-       notes = request.form.get('notes')
+   if request.method == 'POST':
+      title = request.form.get('title')
+      author = request.form.get('author')
+      notes = request.form.get('notes')
        
-       db.execute('UPDATE book SET title = ?, author = ?, notes = ? WHERE title = ?',
-                    (new_title, author, notes, title))
-       db.commit()
-       db.close()
+      db.execute('UPDATE book SET title = ?, author = ?, notes = ? WHERE id = ?',
+                    (title, author, notes, id))
+      db.commit()
+      db.close()
 
-       return redirect(url_for('books.view_book', title=new_title))
+      return redirect(url_for('books.view_book', id=id))
     
-    content = db.execute (
-        'SELECT * FROM book WHERE title = ?', 
-        (title,)
-    ).fetchone()
+   content = db.execute (
+      'SELECT * FROM book WHERE id = ?', 
+      (id,)
+   ).fetchone()
 
-    return render_template('library/edit.html', book_info=content)
+   return render_template('library/edit.html', book_info=content)
 
 #non-blueprint functions
 def duplicate_check(title, author):
     
-    db = get_db()
+   db = get_db()
     
-    duplicate = db.execute (
-        '''SELECT * FROM book 
-        WHERE LOWER(title) = LOWER(?)
-        AND LOWER(author) = LOWER(?)''',
-        (title, author)
-    ).fetchone()
-    #returns true if there is a duplicate book. Used in add_book to check for duplicates.
-    return duplicate is not None
+   duplicate = db.execute (
+      '''SELECT id FROM book 
+      WHERE LOWER(title) = LOWER(?)
+      AND LOWER(author) = LOWER(?)''',
+      (title, author)
+   ).fetchone()
+   #returns true if there is a duplicate book. Used in add_book to check for duplicates.
+   return duplicate is not None
 
 
 
@@ -145,19 +145,19 @@ def duplicate_check(title, author):
 
 
 
-    '''
-    SAVING FOR LATER
-    isbn = request.form.get('ISBN')
-    if isbn:
-        #check the url to see if it loads the correct information. next step is to print out actual book information.
-        #check chat gpt
-        book_info = get_book_info(isbn)
-        works_key = book_info.get('works','this book does not have a works_key :()')
-        author_key = book_info.get('authors')
+   '''
+   SAVING FOR LATER
+   isbn = request.form.get('ISBN')
+   if isbn:
+     #check the url to see if it loads the correct information. next step is to print out actual book information.
+     #check chat gpt
+     book_info = get_book_info(isbn)
+     works_key = book_info.get('works','this book does not have a works_key :()')
+     author_key = book_info.get('authors')
 
-        tad = dict (
-            title = book_info.get('title'),
-            author = get_author_name(author_key),
-            description = get_book_description(works_key)
-        )
+      tad = dict (
+         title = book_info.get('title'),
+         author = get_author_name(author_key),
+         description = get_book_description(works_key)
+     )
     '''

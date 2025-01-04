@@ -16,7 +16,7 @@
 {% block content %}
     {% for book in list %}
         <article>
-            <a href='{{ url_for('books.view_book', title=book['title']) }}'><b>{{ book['title'] }}</b></a>
+            <a href='{{ url_for('books.view_book', id=book['id']) }}'><b>{{ book['title'] }}</b></a>
             <p> {{ book['added'] }} </p>
         </article>
     {% endfor %}
