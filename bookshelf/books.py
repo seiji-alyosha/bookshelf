@@ -16,7 +16,8 @@ bp = Blueprint('books',__name__)
 def books():
    #to get the data from the py file that accesses the SQL database
    db = get_db()
-   #? 
+   
+   #lists all books in the library in descending order
    library = db.execute(
      'SELECT book.id, book.author, book.title, book.notes, date(book.added) as added'
      ' FROM book'
@@ -34,7 +35,7 @@ def add():
 
       db = get_db()
       error = None
-
+      
       if not title or not author: 
          error = 'Please enter a title and author.'
          flash(error)
@@ -43,13 +44,32 @@ def add():
        
       try: 
          if duplicate_check(title, author) == False:
-               db.execute( 
+               db.execute ( 
                   'INSERT INTO book (title, author, notes) VALUES (?, ?, ?)',
                   (title, author, notes),
                )
                db.commit()
-               return redirect(url_for('books.books'))
+               
+               #to retrieve the id of the book added by the user
+               book_id = db.execute (
+                  'SELECT id FROM book WHERE title = ? AND author = ?', 
+                  (title, author)
+               ).fetchone()['id']
+
+               db.close()
+
+               #to handle cases where, for some reason, the id cannot be retrieved.
+               if book_id is None:
+
+                  error = 'Sorry, we could not access the book you just added. Please try viewing the book again.'
+                  flash(error)
+
+                  return render_template('library/add.html')
+
+               #to redirect the user to the new book, given the retrieved id.
+               return redirect(url_for('books.view_book', id=book_id, slug=slugify(title)))
          else:
+
                error = f'You already have <b>{title}</b> by <b>{author}</b> in your library.'
                flash(error)
       
