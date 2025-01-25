@@ -69,7 +69,6 @@ def add():
                #to redirect the user to the new book, given the retrieved id.
                return redirect(url_for('books.view_book', id=book_id, slug=slugify(title)))
          else:
-
                error = f'You already have <b>{title}</b> by <b>{author}</b> in your library.'
                flash(error)
       
@@ -85,38 +84,37 @@ def view_book(id, slug):
    db = get_db()
    error = None
 
-   #whenever uses click OK to delete a book, this function runs.
-   if request.method == 'POST':
-      db.execute('DELETE FROM book WHERE id = ?',
+   try:
+
+      #To run the delete function whenever the user clicks the delete button.
+      #This should be the only instance where a post request is made in the view_book function.
+      if request.method == 'POST':
+         return delete_book(db, id)
+      
+      #if a user is viewing a book or clicks CANCEL when deleting a book, this function runs.
+      #this is also an example of "early returns", which gives a default view for the function and also works as an else statement.
+      content = db.execute (
+         'SELECT * FROM book WHERE id = ?', 
          (id,)
-      )
-      db.commit()
+      ).fetchone()
+
+      #to tell the user the book with the id in the URL doesn't exist in the database.
+      #This might not be necessary since the user will primarily select books from index.
+      if not content:
+         flash('This book is not in your library. Please try another selection.')
+
+         #an early return to the books page if something goes wrong with viewing the book.
+         return redirect(url_for('books.books'))
+
+
+      #to recorrect the slug based on the id if the slug in the URL does not match the book id.
+      if slug != slugify(content['title']):
+         return redirect(url_for('books.view_book', id=id, slug=slugify(content['title'])))
+         
+      return render_template('library/book.html', book_info=content)
+   
+   finally:
       db.close()
-
-      return redirect(url_for('books.books'))
-
-
-   #if a user is viewing a book or clicks CANCEL when deleting a book, this function runs.
-   #this is also an example of "early returns", which gives a default view for the function and also works as an else statement.
-   content = db.execute (
-      'SELECT * FROM book WHERE id = ?', 
-      (id,)
-   ).fetchone()
-
-
-   #if id in URL is wrong. This might not be necessary since the user will primarily select books from index.
-   if not content:
-     flash('This book is not in your library. Try another selection.')
-     return redirect(url_for('books.books'))
-
-
-   #if slug in URL is incorrect, it recorrects the slug based on the book id.
-   if slug != slugify(content['title']):
-      return redirect(url_for('books.view_book', id=id, slug=slugify(content['title'])))   
-
-
-   return render_template('library/book.html', book_info=content)
-
 
 @bp.route('/<int:id>/<slug>/edit', methods=['GET','POST'])
 @login_required
@@ -148,6 +146,7 @@ def edit_book(id, slug):
                          
    return render_template('library/edit.html', book_info=content, slug=slugify(content['title']))
 
+
 #non-blueprint functions
 def duplicate_check(title, author):
     
@@ -162,7 +161,17 @@ def duplicate_check(title, author):
    #returns true if there is a duplicate book. Used in add_book to check for duplicates.
    return duplicate is not None
 
-
+#for deleting a book when viewing a book. Runs after the user clicks OK to delete a book.
+def delete_book(db, id):
+   try:
+      db.execute('DELETE FROM book WHERE id = ?',
+         (id,)
+      )
+      db.commit()
+   except Exception as ex:
+      db.rollback()
+      raise ex
+   return redirect(url_for('books.books'))
 
 
 
