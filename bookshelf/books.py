@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, render_template, g, request, redirect, url_for, flash
+    Blueprint, render_template, g, request, redirect, url_for, flash, abort
 )
 
 from slugify import slugify
@@ -10,14 +10,16 @@ from bookshelf.author_name import get_author_name
 
 bp = Blueprint('books',__name__)
 
-#blueprint route functions
+'''
+blueprint route functions
+'''
 @bp.route('/')
 @login_required
 def books():
-   #to get the data from the py file that accesses the SQL database
+   # to get the data from the py file that accesses the SQL database
    db = get_db()
    
-   #lists all books in the library in descending order
+   # lists all books in the library in descending order
    library = db.execute(
      'SELECT book.id, book.author, book.title, book.notes, date(book.added) as added'
      ' FROM book'
@@ -50,7 +52,7 @@ def add():
                )
                db.commit()
                
-               #to retrieve the id of the book added by the user
+               # to retrieve the id of the book added by the user
                book_id = db.execute (
                   'SELECT id FROM book WHERE title = ? AND author = ?', 
                   (title, author)
@@ -58,7 +60,7 @@ def add():
 
                db.close()
 
-               #to handle cases where, for some reason, the id cannot be retrieved.
+               # to handle cases where, for some reason, the id cannot be retrieved.
                if book_id is None:
 
                   error = 'Sorry, we could not access the book you just added. Please try viewing the book again.'
@@ -66,7 +68,7 @@ def add():
 
                   return render_template('library/add.html')
 
-               #to redirect the user to the new book, given the retrieved id.
+               # to redirect the user to the new book, given the retrieved id.
                return redirect(url_for('books.view_book', id=book_id, slug=slugify(title)))
          else:
                error = f'You already have <b>{title}</b> by <b>{author}</b> in your library.'
@@ -85,29 +87,28 @@ def view_book(id, slug):
    error = None
 
    try:
-
-      #To run the delete function whenever the user clicks the delete button.
-      #This should be the only instance where a post request is made in the view_book function.
+      # To run the delete function whenever the user clicks the delete button.
+      # This should be the only instance where a post request is made in the view_book function.
       if request.method == 'POST':
          return delete_book(db, id)
       
-      #if a user is viewing a book or clicks CANCEL when deleting a book, this function runs.
-      #this is also an example of "early returns", which gives a default view for the function and also works as an else statement.
+      # if a user is viewing a book or clicks CANCEL when deleting a book, this function runs.
+      # this is also an example of "early returns", which gives a default view for the function and also works as an else statement.
       content = db.execute (
          'SELECT * FROM book WHERE id = ?', 
          (id,)
       ).fetchone()
 
-      #to tell the user the book with the id in the URL doesn't exist in the database.
-      #This might not be necessary since the user will primarily select books from index.
+      # to tell the user the book with the id in the URL doesn't exist in the database.
+      # This might not be necessary since the user will primarily select books from index.
       if not content:
          flash('This book is not in your library. Please try another selection.')
 
-         #an early return to the books page if something goes wrong with viewing the book.
+         # an early return to the books page if something goes wrong with viewing the book.
          return redirect(url_for('books.books'))
 
 
-      #to recorrect the slug based on the id if the slug in the URL does not match the book id.
+      # to recorrect the slug based on the id if the slug in the URL does not match the book id.
       if slug != slugify(content['title']):
          return redirect(url_for('books.view_book', id=id, slug=slugify(content['title'])))
          
@@ -123,31 +124,49 @@ def edit_book(id, slug):
    db = get_db()
    error = None
 
-   if request.method == 'POST':
-      title = request.form.get('title')
-      author = request.form.get('author')
-      notes = request.form.get('notes')
-       
-      db.execute('UPDATE book SET title = ?, author = ?, notes = ? WHERE id = ?',
-                    (title, author, notes, id))
-      db.commit()
+   try:
+      if request.method == 'POST':
+         title = request.form.get('title')
+         author = request.form.get('author')
+         notes = request.form.get('notes')
+
+         # server side input validation of title and author
+         if (not title or title.isspace()) and (not author or author.isspace()): 
+            error = 'Looks like you forgot a title and an author. Please try again.'
+            flash(error)
+            return redirect(url_for('books.edit_book', id=id, slug=slug))
+         elif not title or title.isspace():
+            error = 'Looks like you forgot a title. Please try again.'
+            flash(error)
+            return redirect(url_for('books.edit_book', id=id, slug=slug))
+         elif not author or author.isspace():
+            error = 'Looks like you forgot an author. Please try again.'
+            flash(error)
+            return redirect(url_for('books.edit_book', id=id, slug=slug))
+
+         return update_book(db, id, title, author, notes)
+      
+      content = db.execute (
+         'SELECT * FROM book WHERE id = ?', 
+         (id,)
+      ).fetchone()
+
+      # input validation if the book id doesn't exist in the database.
+      if not content:
+         abort(404, description='Sorry, we couldn\'t find the book you were looking for. Please try another selection.')
+
+      # if the slug in the url doesn't match with the`` book title for the book id, it corrects the slug.
+      if slug != slugify(content['title']):
+         return redirect(url_for('books.edit_book', id=id, slug=slugify(content['title'])))
+
+      return render_template('library/edit.html', book_info=content, slug=slugify(content['title']))
+      
+   finally:
       db.close()
 
-      return redirect(url_for('books.view_book', id=id, slug=title))
-    
-   content = db.execute (
-      'SELECT * FROM book WHERE id = ?', 
-      (id,)
-   ).fetchone()
-
-   #if the slug in the url doesn't match with the book title for the book id, it corrects the slug.
-   if slug != slugify(content['title']):
-      return redirect(url_for('books.edit_book', id=id, slug=slugify(content['title'])))
-                         
-   return render_template('library/edit.html', book_info=content, slug=slugify(content['title']))
-
-
-#non-blueprint functions
+'''
+non-blueprint functions
+'''
 def duplicate_check(title, author):
     
    db = get_db()
@@ -158,10 +177,10 @@ def duplicate_check(title, author):
       AND LOWER(author) = LOWER(?)''',
       (title, author)
    ).fetchone()
-   #returns true if there is a duplicate book. Used in add_book to check for duplicates.
+   # returns true if there is a duplicate book. Used in add_book to check for duplicates.
    return duplicate is not None
 
-#for deleting a book when viewing a book. Runs after the user clicks OK to delete a book.
+# for deleting a book when viewing a book. Runs after the user clicks OK to delete a book.
 def delete_book(db, id):
    try:
       db.execute('DELETE FROM book WHERE id = ?',
@@ -172,6 +191,19 @@ def delete_book(db, id):
       db.rollback()
       raise ex
    return redirect(url_for('books.books'))
+
+# for updating a book whenever the user clicks the save button in the edit page.
+def update_book(db, id, title, author, notes):
+   try:
+      db.execute('UPDATE book SET title = ?, author = ?, notes = ? WHERE id = ?',
+         (title, author, notes, id)
+      )
+      db.commit()
+   except Exception as ex:
+      db.rollback()
+      raise ex
+   return redirect(url_for('books.view_book', id=id, slug=title))
+
 
 
 
