@@ -1,0 +1,15 @@
+.app-container {
+   display: flex;
+   flex-direction: row;
+   min-height: 100vh;
+}
+
+main {
+   display: flex;
+   flex-direction: row;
+}
+
+article {
+   flex: 1;
+   padding: 1em;
+}

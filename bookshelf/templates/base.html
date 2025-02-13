@@ -1,10 +1,37 @@
 <!DOCTYPE html>
-<title> {% block title %}{% endblock %}</title>
-<nav> {% block nav %}{% endblock %}</nav>
+<html>
+   <head>
+      <link rel='stylesheet' href='{{ url_for('static', filename='styles.css') }}'>
+   </head>
 
-<section>
-    {% for message in get_flashed_messages() %}
-        <div>{{ message|safe }}</div>
-    {% endfor %}
-    {% block content %}{% endblock %}
-</section>
+   <title> 
+      {% block title %}
+      {% endblock %}
+   </title>
+
+   <nav>
+      <img src='{{ url_for('static', filename='Ennoia.svg') }}'>
+      {% block nav %}
+      {% endblock %}
+   </nav>
+
+   <body>
+      <div class ='app-container'>
+         <header>
+            {% block header %}
+            {% endblock %}
+         </header>
+
+         <section>
+            {% for message in get_flashed_messages() %}
+               <div>{{ message|safe }}</div>
+            {% endfor %}
+         </section>
+
+         <main>
+            {% block content %}
+            {% endblock %}
+         </main>
+      </div>
+   </body>
+</html>
