@@ -13,3 +13,21 @@ article {
    flex: 1;
    padding: 1em;
 }
+
+nav {
+   display: flex;
+}
+
+.user-name {
+   margin-left: auto;
+   margin-right: .5em;
+}
+
+.add-button {
+   margin-left: 1em;
+}
+
+.logout-button {
+   margin-left: .5em;
+   margin-right: 1em;
+}

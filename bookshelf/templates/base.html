@@ -10,8 +10,8 @@
    </title>
 
    <nav>
-      <img src='{{ url_for('static', filename='Ennoia.svg') }}'>
-      {% block nav %}
+      <img src='{{ url_for('static', filename='Ennoia.svg') }}' href='{{ url_for('index') }}'>
+      {% block menu %}
       {% endblock %}
    </nav>
 
