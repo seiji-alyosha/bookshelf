@@ -24,7 +24,20 @@ nav {
 }
 
 .add-button {
+   display: flex;
+   align-items: center;
+   align-content: center;
+   justify-content: center;
    margin-left: 1em;
+   background-color: #F5F5F5;
+   border: 1px #333533 solid;
+   border-radius: 15px;
+   width: 66px;
+   height: 25px;
+   text-align: center;
+   font-size: 14pt;
+   font-weight: bold;
+   font-family: 'Cambay';
 }
 
 .logout-button {
