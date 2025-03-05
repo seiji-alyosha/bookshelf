@@ -1,6 +1,5 @@
 """
-bookshelf
-a personal library
+Ennoia
 
 """
 import os

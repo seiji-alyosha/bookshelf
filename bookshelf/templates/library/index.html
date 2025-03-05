@@ -4,29 +4,25 @@
 
 {%block menu%}
       {% if g.user %}
-         <div class='add-button'>
-            <p><a href='{{ url_for('books.add') }}'>add</a></p>
-         </div>
-
+         <p><a href='{{ url_for('books.add') }}' class='add-button'>Add</a></p>
          <div class='user-name'>
             <p>Hi, {{g.user['username']}}</p>
          </div>
 
-         <div class='logout-button'>
-            <p><a href='{{ url_for('auth.logout') }}'>log out</a></p>
-         </div>
+         <p><a href='{{ url_for('auth.logout') }}' class='logout-button'>Log Out</a></p>
             <!-- <li><a href='{{ url_for('index') }}'>bookshelf</a></li> -->
       {% endif %}
 {% endblock %}
 
-<h1>books</h1>
 {% block content %}
-    {% for book in list %}
-        <article>
-            <a href='{{ url_for('books.view_book', id=book['id'], slug=book['title']) }}'><b>{{ book['title'] }}</b></a>
-            <p> {{ book['added'] }} </p>
-        </article>
-    {% endfor %}
+   <div class='index-container'>
+      {% for book in list %}
+         <article>
+               <a href='{{ url_for('books.view_book', id=book['id'], slug=book['title']) }}'><b>{{ book['title'] }}</b></a>
+               <p> {{ book['added'] }} </p>
+         </article>
+      {% endfor %}
+   </div>
 {% endblock %}
 
 

@@ -5,7 +5,7 @@
     <menu>
         {% if g.user %}
             <li>{{g.user['username']}}</li>
-            <li><a href='{{ url_for('auth.logout') }}'>log out</a></li>
+            <li><a href='{{ url_for('auth.logout') }}'>logout</a></li>
             <li><a href='{{ url_for('books.add') }}'>add</a></li>
             <li><a href='{{ url_for('index') }}'>bookshelf</a></li>
         {% endif %}
