@@ -86,11 +86,40 @@ nav {
 }
 
 .index-container {
-   display: flex;
-   width: 100%;
-   margin-left: 5em;
-   margin-right: 5em;
-   flex-direction: row;
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+   grid-gap: 1em;
+   width: 80%;
+   max-width: 1200px;
+   margin: 1em auto;
    justify-content: center;
-   margin-top: 1em;
+}
+
+.book-card {
+   display: flex;
+   flex-direction: column;
+   border-radius: 5px;
+   margin: 1em;
+   text-decoration: none;
+   color: #333533;
+}
+
+.book-card-title {
+   font-size: 12pt;
+   font-family: 'Cambay';
+   font-weight: bold;
+   margin: .5em;
+   text-align: left;
+}
+
+.book-card-author {
+   font-size: 9pt;
+   font-family: 'Cambay';
+   font-weight: normal;
+   margin: .75em;
+   text-align: left;
+   margin-top: .25em;
+}
+.book-card:hover {
+   background-color: #f5f5f5
 }
