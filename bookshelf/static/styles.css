@@ -6,12 +6,11 @@
 
 main {
    display: flex;
-   flex-direction: row;
+   width: 100%;
 }
 
 article {
    flex: 1;
-   padding: 1em;
 }
 
 nav {
@@ -44,7 +43,7 @@ nav {
    align-content: center;
    justify-content: center;
    align-self: center;
-   margin-left: 1em;
+   margin-left: 1.5em;
    border-radius: 5px;
    width: 66px;
    height: 25px;
@@ -87,12 +86,13 @@ nav {
 
 .index-container {
    display: grid;
-   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+   grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
    grid-gap: 1em;
    width: 80%;
    max-width: 1200px;
+   padding: 1em;
    margin: 1em auto;
-   justify-content: center;
+   justify-content: left;
 }
 
 .book-card {
@@ -122,4 +122,20 @@ nav {
 }
 .book-card:hover {
    background-color: #f5f5f5
+}
+
+.book-container {
+   width: 80%;
+   max-width: 1200px;
+   padding: 1em;
+   margin: 1em auto;
+   justify-content: left;
+}
+
+.edit-book-container {
+   width: 80%;
+   max-width: 1200px;
+   padding: 1em;
+   margin: 1em auto;
+   justify-content: left;
 }

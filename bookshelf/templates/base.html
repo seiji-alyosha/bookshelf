@@ -10,7 +10,9 @@
    </title>
 
    <nav>
-      <img src='{{ url_for('static', filename='Ennoia.svg') }}' class='logo'>
+      <a href='{{ url_for('books.books') }}' class='logo'>
+         <img src='{{ url_for('static', filename='Ennoia.svg') }}' alt='Ennoia logo'>
+      </a>
       {% block menu %}
       {% endblock %}
    </nav>
