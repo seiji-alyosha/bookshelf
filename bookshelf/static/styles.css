@@ -139,3 +139,40 @@ nav {
    margin: 1em auto;
    justify-content: left;
 }
+
+.login-container {
+   display: flex;
+   width: 80%;
+   max-width: 1200px;
+   padding: 1em;
+   margin: 1em auto;
+   justify-content: right;
+}
+
+.login {
+   padding: 1em;
+   margin: 1em auto;
+   justify-content: right;
+}
+
+.username-label {
+   font-family: 'Cambay';
+   font-size: 12pt;
+   font-weight: bold;
+}
+
+.username-input {
+   font-family: 'Cambay';
+   font-size: 12pt;
+}
+
+.password-label {
+   font-family: 'Cambay';
+   font-size: 12pt;
+   font-weight: bold;
+}
+
+.password-input {
+   font-family: 'Cambay';
+   font-size: 12pt;
+}
