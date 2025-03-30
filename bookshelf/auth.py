@@ -112,7 +112,7 @@ def login():
             return redirect(url_for('index'))
         #this allows the user to see the error messages if they occur.
         flash(error)
-    return render_template('auth/login.html')   
+    return render_template('auth/login.html', is_login=True)   
         
 @bp.route('/logout')
 def logout():

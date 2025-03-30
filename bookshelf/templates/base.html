@@ -9,13 +9,15 @@
       {% endblock %}
    </title>
 
-   <nav>
-      <a href='{{ url_for('books.books') }}' class='logo'>
-         <img src='{{ url_for('static', filename='Ennoia.svg') }}' alt='Ennoia logo'>
-      </a>
-      {% block menu %}
-      {% endblock %}
-   </nav>
+   {% if not is_login %}
+      <nav>
+         <a href='{{ url_for('books.books') }}' class='logo'>
+            <img src='{{ url_for('static', filename='Ennoia.svg') }}' alt='Ennoia logo'>
+         </a>
+         {% block menu %}
+         {% endblock %}
+      </nav>
+   {% endif %}
 
    <body>
       <div class ='app-container'>

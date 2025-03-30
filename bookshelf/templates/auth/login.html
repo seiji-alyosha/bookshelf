@@ -3,7 +3,12 @@
 {% block title %} Login {% endblock %}
 
 {% block content %}
+
    <div class='login-container'>
+      <div class='login-logo-container'>
+         <h1 class='login-title'>Sign in</h1>
+         <img src='{{ url_for('static', filename='Ennoia.svg') }}' alt='Ennoia logo'>
+      </div>
       <form class= 'login' method='post'>
          <label for='username' class='username-label'>Username</label>
          <input type='text' name='username' id='username' class='username-input'>
