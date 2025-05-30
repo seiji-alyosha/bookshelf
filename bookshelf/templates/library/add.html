@@ -11,27 +11,22 @@
     </menu>
 {% endblock %}
 
-<h1>books</h1>
 {% block content %}
-    <form method='post'>
-        <label for='title'>Book title:</label>
-        <input type='text' name='title' id='title'>
-
-        <label for='author'>Author:</label>
-        <input type='text' name='author' id='author'>
-
-        <label for='notes'>Notes:</label>
-        <textarea placeholder='Type your notes here' id='notes' name='notes'></textarea>
-        <input type='submit' value='Submit'>
-    </form>
-    {% if title %}
-        <p>{{title}}</p>
-    {% endif %}
-    {% if author %}
-        <p>{{author}}</p>
-    {% endif %}
-    
-    {% if notes %}
-        <p>{{notes}}</p>
-    {% endif %}
+   <div class='add-book-container'>
+      <form method='POST'>
+         <div class='add-title'>
+         <label class='add-title-label' for='title'>Title:</label>
+         <input type='text' name='title' id='title'>
+         </div>
+         <div class='add-author'>
+         <label class='add-author-label' for='author'>Author:</label>
+         <input type='text' name='author' id='author'>
+         </div>
+         <div class='add-notes'>
+         <label class='add-notes-label' for='notes'>Notes:</label>
+         <textarea placeholder='What was most compelling?' id='notes' name='notes'></textarea>
+         </div>
+         <input type='submit' value='Add'>
+      </form>
+   </div>
 {% endblock %}

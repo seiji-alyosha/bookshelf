@@ -14,24 +14,24 @@
 {% endblock %}
 
 {% block content %}
-   <h1>Edit book</h1>
 
    <div class='edit-book-container'>
       <form method='POST'>
-         <div>
-               <label for='title'>Title:</label>
-               <input type='text' id='title' name='title' value='{{ book_info['title'] }}' >
+         <div class='edit-title'>
+               <label class='edit-title-label' for='title'>Title:</label>
+               <input type='text' id='title' name='title' class='edit-title-form' value='{{ book_info['title'] }}' >
          </div>
-         <div>
-               <label for='author'>Author:</label>
-               <input type='text' id='author' name='author' value='{{ book_info['author'] }}' >
+         <div class='edit-author'>
+               <label class='edit-author-label' for='author'>Author:</label>
+               <input type='text' id='author' name='author' class='edit-author-form' value='{{ book_info['author'] }}' >
          </div>
-         <div>
-               <label for='notes'>Notes:</label>
+         <div class='edit-notes'>
+               <label class='edit-notes-label' for='notes'>Notes:</label>
                <textarea id='notes' name='notes'>{{ book_info['notes'] }}</textarea>
          </div>
-
-         <button type='submit'>Save changes</button>
+         <div class='book-buttons'>
+            <button type='submit'>Save</button>
+         </div>
       </form>
    </div>
 {% endblock %}
