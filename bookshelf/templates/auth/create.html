@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %} Create new account {% endblock %}
+{% block title %} Create {% endblock %}
 
 {% block content %}
-<form method='post'>
-    <label for='username'>Username</label>
-    <input name='username' id='username'>
-    <label for='password'>Password</label>
-    <input type='password' name='password' id='password'>
-    <input type='submit' value='Create'>
-</form>
+   <div class='login-create-container'>
+      <div class='create-logo-container'>
+         <h1 class='login-title'>Create profile</h1>
+         <img src='{{ url_for('static', filename='Ennoia.svg') }}' alt='Ennoia logo'>
+      </div>
+      <div class='create-form-container'>
+         <form class='create' method='post'>
+            <label for='username' class='username-label'>Username</label>
+            <input type='text' name='username' id='username' size='24' class='username-input'>
+            <label for='password' class='password-label'>Password</label>
+            <input type='password' name='password' id='password' size='24' class='password-input'>
+            <div class='create-buttons'>
+               <input type='submit' value='Create'>
+            </div>
+         </form>
+      </div>      
+   </div>
 {% endblock %}

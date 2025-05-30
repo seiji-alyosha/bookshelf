@@ -9,7 +9,7 @@
       {% endblock %}
    </title>
 
-   {% if not is_login %}
+   {% if not is_login and not is_create %}
       <nav>
          <a href='{{ url_for('books.books') }}' class='logo'>
             <img src='{{ url_for('static', filename='Ennoia.svg') }}' alt='Ennoia logo'>

@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, render_template, g, request, redirect, url_for, flash, abort
+    Blueprint, render_template, g, request, redirect, url_for, flash, abort, jsonify
 )
 
 from slugify import slugify
@@ -42,7 +42,7 @@ def add():
          error = 'Please enter a title and author.'
          flash(error)
            
-         return render_template('library/add')
+         return render_template('library/add.html')
        
       try: 
          if duplicate_check(title, author) == False:
@@ -116,6 +116,7 @@ def view_book(id, slug):
    
    finally:
       db.close()
+
 
 @bp.route('/<int:id>/<slug>/edit', methods=['GET','POST'])
 @login_required

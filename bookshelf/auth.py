@@ -71,7 +71,7 @@ def create():
                 return redirect(url_for('auth.login'))
         #this allows the user to see the error messages if they occur.
         flash(error)
-    return render_template('auth/create.html')
+    return render_template('auth/create.html', is_create=True)
 
 @bp.route('/login', methods=('GET','POST'))
 def login():
