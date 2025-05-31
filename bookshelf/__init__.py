@@ -32,14 +32,19 @@ def create_app(test_config=None):
     from . import db
     db.init_app(bookshelf)
 
-    from . import schema  # Add this line
-    schema.init_app(bookshelf)  # Add this line
+   # to initialize the schema with bookshelf
+    from . import schema
+    schema.init_app(bookshelf)
 
     #registers blueprints with bookshelf
     from . import auth
     from . import books
+    from . import api
     bookshelf.register_blueprint(auth.bp)
     bookshelf.register_blueprint(books.bp)
+    bookshelf.register_blueprint(api.bp)
+    
+    #index route
     bookshelf.add_url_rule('/', endpoint='index')
 
     

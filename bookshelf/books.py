@@ -21,9 +21,8 @@ def books():
    
    # lists all books in the library in descending order
    library = db.execute(
-     'SELECT book.id, book.author, book.title, book.notes, date(book.added) as added'
-     ' FROM book'
-     ' ORDER BY book.id DESC'
+     'SELECT * FROM book WHERE user_id = ? ORDER BY id DESC',
+     (g.user['id'],)
    ).fetchall()
    return render_template('library/index.html', list=library)
 
@@ -47,8 +46,8 @@ def add():
       try: 
          if duplicate_check(title, author) == False:
                db.execute ( 
-                  'INSERT INTO book (title, author, notes) VALUES (?, ?, ?)',
-                  (title, author, notes),
+                  'INSERT INTO book (user_id, title, author, notes) VALUES (?, ?, ?, ?)',
+                  (g.user['id'], title, author, notes),
                )
                db.commit()
                
