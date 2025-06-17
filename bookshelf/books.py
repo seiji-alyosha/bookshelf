@@ -77,10 +77,10 @@ def add():
         db.close()
        
    return render_template('library/add.html')
-
+@bp.route('/<int:id>', methods=['GET', 'POST'])
 @bp.route('/<int:id>/<slug>', methods=['GET', 'POST'])
 @login_required
-def view_book(id, slug):
+def view_book(id, slug=None):
 
    db = get_db()
    error = None
@@ -108,7 +108,9 @@ def view_book(id, slug):
 
 
       # to recorrect the slug based on the id if the slug in the URL does not match the book id.
-      if slug != slugify(content['title']):
+      if slug is not None and slug != slugify(content['title']):
+         return redirect(url_for('books.view_book', id=id, slug=slugify(content['title'])))
+      elif slug is None:
          return redirect(url_for('books.view_book', id=id, slug=slugify(content['title'])))
          
       return render_template('library/book.html', book_info=content)

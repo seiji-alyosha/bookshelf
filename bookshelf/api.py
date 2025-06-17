@@ -55,7 +55,7 @@ def api_books():
    db= get_db()
    #to get all books from SQL database
    library = db.execute(
-       'SELECT * FROM book WHERE user_id = ? ORDER BY id DESC',
+       'SELECT id, title, author, notes, added FROM book WHERE user_id = ? ORDER BY id DESC',
        (g.user['id'],)
    ).fetchall()
 
@@ -74,13 +74,13 @@ def api_view_book(id):
    
    #to get a book from the SQL database based on the book id
    book = db.execute(
-       'SELECT * FROM book WHERE id = ? AND user_id = ?',
+       'SELECT id, title, author, notes, added FROM book WHERE id = ? AND user_id = ?',
        (id, g.user['id'])
    ).fetchone()
 
    if book is None:
       #if the book does not exist, return a 404 error
-      return jsonify({"error": "Book not found"}), 404
+      return jsonify({"error": "Sorry, we couldn't find a book with that id. Please try a different id."}), 404
 
    #to get a book into a language that can be converted to JSON
    book_info = dict(book)
