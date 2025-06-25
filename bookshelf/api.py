@@ -13,13 +13,13 @@ bp = Blueprint('api', __name__, url_prefix='/api/v1')
 
 #api authentication functions
 def api_auth_required(view):
-   
+
    #to set up the decorataror for API authentication (used before each API route)
    @wraps(view)
    def wrapped_view(**kwargs):
       #checks if the request has authorization headers
       if request.authorization is None:
-         return jsonify({"error": "Authorization required"}), 401
+         return jsonify({"error": "Please provide a username and a password."}), 401
 
       #sets the username and password from the request authorization
       username = request.authorization.username
@@ -36,9 +36,9 @@ def api_auth_required(view):
 
       #checking if username and password from the request exists in the database exists in the database
       if user is None:
-         return jsonify({"error": "Invalid credentials"}), 401
+         return jsonify({"error": "We couldn't find that account. Please try again."}), 401
       elif not check_password_hash(user["password"], password):
-         return jsonify({"error": "Invalid credentials"}), 401
+         return jsonify({"error": "We couldn't find that account. Please try again."}), 401
       
       #if the user is authenticated, set the user in the global context
       g.user = user
@@ -80,7 +80,7 @@ def api_view_book(id):
 
    if book is None:
       #if the book does not exist, return a 404 error
-      return jsonify({"error": "Sorry, we couldn't find a book with that id. Please try a different id."}), 404
+      return jsonify({"error": "Sorry, we couldn't find a book with that id. Please try with a different id."}), 404
 
    #to get a book into a language that can be converted to JSON
    book_info = dict(book)
