@@ -8,7 +8,8 @@ from flask import Flask
 def create_app(test_config=None):
     bookshelf = Flask(__name__, instance_relative_config=True)
     bookshelf.config.from_mapping(
-        SECRET_KEY='dev',
+        #for 
+        SECRET_KEY=os.environment.get('SECRET_KEY','dev'),
         #stores the database in the instance folder
         DATABASE=os.path.join(bookshelf.instance_path, 'bookshelf.sqlite'),
     )
@@ -16,7 +17,6 @@ def create_app(test_config=None):
     if test_config is None:
         #to update the secret key for deployment
         bookshelf.config.from_pyfile('config.py', silent=True)
-
     else:
         #configurations for testing
         bookshelf.config.update(test_config)

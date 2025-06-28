@@ -1,3 +1,10 @@
+"""
+
+NOTE: THIS IS NOT USED IN CURRENT VERSION OF ENNOIA.
+originally used for integration with open library.
+
+"""
+
 import requests
 from flask import (
     Blueprint, render_template, g, request
