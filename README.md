@@ -44,4 +44,4 @@ A place to reflect on the books you read.
 
 ## Logging out
 
-1. In the home page, click **Log Out**.
+- In the home page, click **Log Out**.
