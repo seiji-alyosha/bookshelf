@@ -45,3 +45,6 @@ A place to reflect on the books you read.
 ## Logging out
 
 - In the home page, click **Log Out**.
+
+## Using the API
+- See the [API documentation](https://seiji-alyosha.github.io/ennoia_api_docs/).
